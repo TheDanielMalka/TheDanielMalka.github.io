@@ -3,24 +3,26 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Daniel Malka — DevOps Engineer</title>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<meta name="description" content="Daniel Malka — DevOps, AWS, Docker, and full-stack delivery. Documented roadmaps, Project Arena vision stack, CI/CD discipline.">
+<title>Daniel Malka — DevOps · Cloud · Product Engineering</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #080c0a;
-  --bg2: #0d1410;
-  --green: #00ff88;
-  --green-dim: #00cc6a;
-  --green-faint: rgba(0,255,136,0.07);
-  --green-border: rgba(0,255,136,0.18);
-  --text: #c8d8c8;
-  --muted: #4a6050;
-  --white: #eef5ee;
-  --red: #ff4466;
-  --yellow: #ffcc44;
-  --blue: #44aaff;
+  --bg: #030303;
+  --bg2: #0a0a0a;
+  --bg3: #111;
+  --red: #e50914;
+  --red-hot: #ff2a3d;
+  --red-dim: #7a060c;
+  --red-faint: rgba(229, 9, 20, 0.09);
+  --red-border: rgba(229, 9, 20, 0.4);
+  --white: #fafafa;
+  --text: #bdbdbd;
+  --muted: #5c5c5c;
   --mono: 'JetBrains Mono', monospace;
-  --display: 'Syne', sans-serif;
+  --blade: 'Oswald', sans-serif;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -36,713 +38,1020 @@ body {
   overflow-x: hidden;
 }
 
-/* CUSTOM CURSOR */
-#cursor {
-  position: fixed;
-  width: 18px; height: 18px;
-  border: 2px solid var(--green);
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 9999;
-  transform: translate(-50%,-50%);
-  transition: transform 0.1s, width 0.2s, height 0.2s, background 0.2s;
-  mix-blend-mode: screen;
-}
-#cursor.hover { width: 40px; height: 40px; background: rgba(0,255,136,0.1); }
-#cursor-dot {
-  position: fixed;
-  width: 4px; height: 4px;
-  background: var(--green);
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 9999;
-  transform: translate(-50%,-50%);
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  body { cursor: auto; }
+  #cursor, #cursor-dot { display: none !important; }
+  .reveal { opacity: 1 !important; transform: none !important; }
+  .bg-pulse, .hero-scan, .accent-glow, .shimmer::after { animation: none !important; }
 }
 
-/* SCANLINES */
+.bg-pulse {
+  position: fixed;
+  inset: -50%;
+  background:
+    radial-gradient(ellipse 50% 40% at 20% 30%, rgba(229, 9, 20, 0.14), transparent 55%),
+    radial-gradient(ellipse 45% 35% at 80% 70%, rgba(229, 9, 20, 0.08), transparent 50%),
+    radial-gradient(ellipse 60% 50% at 50% 100%, rgba(255, 255, 255, 0.03), transparent 45%);
+  animation: bgDrift 28s ease-in-out infinite alternate;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes bgDrift {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  100% { transform: translate(4%, 3%) rotate(2deg); }
+}
+
+#cursor {
+  position: fixed;
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--red);
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%) rotate(45deg);
+  transition: transform 0.12s, width 0.2s, height 0.2s, background 0.2s;
+  mix-blend-mode: screen;
+}
+#cursor.hover {
+  width: 38px;
+  height: 38px;
+  background: rgba(229, 9, 20, 0.14);
+}
+#cursor-dot {
+  position: fixed;
+  width: 4px;
+  height: 4px;
+  background: var(--white);
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+}
+
 body::before {
-  content:'';
-  position:fixed;
-  inset:0;
+  content: '';
+  position: fixed;
+  inset: 0;
   background: repeating-linear-gradient(
     0deg,
     transparent,
     transparent 2px,
-    rgba(0,0,0,0.08) 2px,
-    rgba(0,0,0,0.08) 4px
+    rgba(0, 0, 0, 0.2) 2px,
+    rgba(0, 0, 0, 0.2) 4px
   );
-  pointer-events:none;
-  z-index:1000;
+  pointer-events: none;
+  z-index: 1000;
 }
 
-/* NOISE */
+.hero-scan {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 120px;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    rgba(229, 9, 20, 0.06),
+    transparent
+  );
+  animation: scanMove 8s linear infinite;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0.7;
+}
+
+@keyframes scanMove {
+  0% { top: -10%; opacity: 0; }
+  10% { opacity: 0.7; }
+  90% { opacity: 0.7; }
+  100% { top: 110%; opacity: 0; }
+}
+
 body::after {
-  content:'';
-  position:fixed;
-  inset:0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
-  pointer-events:none;
-  z-index:999;
-  opacity:0.4;
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 999;
 }
 
-/* NAV */
 nav {
   position: fixed;
-  top: 0; left: 0; right: 0;
+  top: 0;
+  left: 0;
+  right: 0;
   z-index: 500;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 18px 40px;
-  background: rgba(8,12,10,0.85);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--green-border);
+  padding: 16px 40px;
+  background: rgba(3, 3, 3, 0.88);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--red-border);
 }
+
 .nav-logo {
-  font-family: var(--display);
+  font-family: var(--blade);
   font-size: 1.1rem;
-  font-weight: 800;
-  color: var(--green);
-  letter-spacing: -0.5px;
+  font-weight: 700;
+  color: var(--white);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
-.logo-svg {
-  width: 54px; height: 27px;
-}
+
+.logo-svg { width: 52px; height: 26px; }
+
 .nav-links {
   display: flex;
-  gap: 32px;
+  gap: 26px;
   list-style: none;
 }
+
 .nav-links a {
   color: var(--muted);
   text-decoration: none;
-  font-size: 0.78rem;
+  font-size: 0.7rem;
   font-weight: 600;
-  letter-spacing: 1.5px;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  transition: color 0.2s;
+  transition: color 0.2s, text-shadow 0.2s;
 }
-.nav-links a::before { content: '> '; color: var(--green); opacity: 0; transition: opacity 0.2s; }
-.nav-links a:hover { color: var(--green); }
-.nav-links a:hover::before { opacity: 1; }
 
-/* HERO */
+.nav-links a:hover {
+  color: var(--white);
+  text-shadow: 0 0 18px rgba(229, 9, 20, 0.5);
+}
+
 #hero {
   min-height: 100vh;
   display: flex;
   align-items: center;
-  padding: 120px 40px 80px;
+  padding: 120px 40px 100px;
   position: relative;
   overflow: hidden;
+  z-index: 1;
 }
 
-/* grid bg */
 #hero::before {
   content: '';
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(0,255,136,0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,255,136,0.04) 1px, transparent 1px);
-  background-size: 40px 40px;
-  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+    linear-gradient(108deg, transparent 38%, rgba(229, 9, 20, 0.07) 38%, rgba(229, 9, 20, 0.07) 39.2%, transparent 39.2%),
+    linear-gradient(rgba(229, 9, 20, 0.028) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(229, 9, 20, 0.028) 1px, transparent 1px);
+  background-size: 100% 100%, 44px 44px, 44px 44px;
+  mask-image: radial-gradient(ellipse 78% 72% at 45% 48%, black 22%, transparent 100%);
+  z-index: 0;
+}
+
+.accent-glow {
+  animation: accentPulse 4s ease-in-out infinite;
+}
+
+@keyframes accentPulse {
+  0%, 100% { text-shadow: 0 0 28px rgba(229, 9, 20, 0.45); }
+  50% { text-shadow: 0 0 48px rgba(229, 9, 20, 0.75), 0 0 80px rgba(229, 9, 20, 0.25); }
 }
 
 .hero-inner {
-  max-width: 900px;
+  max-width: 940px;
   margin: 0 auto;
   width: 100%;
+  position: relative;
+  z-index: 3;
+  border-left: 4px solid var(--red);
+  padding-left: 36px;
+  box-shadow: -12px 0 40px rgba(229, 9, 20, 0.08);
 }
 
 .hero-prompt {
-  font-size: 0.8rem;
-  color: var(--green);
-  letter-spacing: 2px;
-  margin-bottom: 20px;
+  font-size: 0.72rem;
+  color: var(--red);
+  letter-spacing: 0.18em;
+  margin-bottom: 16px;
   opacity: 0;
-  animation: fadeUp 0.6s ease 0.2s forwards;
+  animation: fadeUp 0.55s ease 0.1s forwards;
 }
+
 .hero-prompt span { color: var(--muted); }
 
 .hero-name {
-  font-family: var(--display);
-  font-size: clamp(3.5rem, 8vw, 7rem);
-  font-weight: 800;
-  line-height: 0.95;
+  font-family: var(--blade);
+  font-size: clamp(3rem, 8.5vw, 6.25rem);
+  font-weight: 700;
+  line-height: 0.92;
   color: var(--white);
-  letter-spacing: -3px;
-  margin-bottom: 10px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
   opacity: 0;
-  animation: fadeUp 0.6s ease 0.4s forwards;
+  animation: fadeUp 0.55s ease 0.25s forwards;
 }
-.hero-name .accent { color: var(--green); }
+
+.hero-name .accent {
+  color: var(--red);
+}
 
 .hero-title {
-  font-size: clamp(1rem, 2.5vw, 1.4rem);
-  font-weight: 300;
+  font-family: var(--blade);
+  font-size: clamp(0.95rem, 2vw, 1.28rem);
+  font-weight: 500;
   color: var(--muted);
-  margin-bottom: 30px;
-  letter-spacing: 3px;
+  margin-bottom: 24px;
+  letter-spacing: 0.26em;
   text-transform: uppercase;
   opacity: 0;
-  animation: fadeUp 0.6s ease 0.6s forwards;
+  animation: fadeUp 0.55s ease 0.4s forwards;
 }
 
 .hero-typed {
-  font-size: 1rem;
+  font-size: 0.92rem;
   color: var(--text);
-  margin-bottom: 50px;
-  height: 26px;
+  margin-bottom: 36px;
+  min-height: 28px;
+  max-width: 36em;
   opacity: 0;
-  animation: fadeUp 0.6s ease 0.8s forwards;
+  animation: fadeUp 0.55s ease 0.55s forwards;
 }
+
 .hero-typed .cursor-blink {
   display: inline-block;
   width: 2px;
-  height: 1.1em;
-  background: var(--green);
+  height: 1.05em;
+  background: var(--red);
   vertical-align: text-bottom;
+  margin-left: 2px;
   animation: blink 1s step-end infinite;
 }
+
 @keyframes blink { 50% { opacity: 0; } }
 
 .hero-cta {
   display: flex;
-  gap: 16px;
+  gap: 14px;
   flex-wrap: wrap;
   opacity: 0;
-  animation: fadeUp 0.6s ease 1s forwards;
+  animation: fadeUp 0.55s ease 0.7s forwards;
 }
+
 .btn {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 13px 28px;
-  border-radius: 4px;
+  padding: 14px 26px;
+  border-radius: 0;
   font-family: var(--mono);
-  font-size: 0.82rem;
+  font-size: 0.74rem;
   font-weight: 700;
-  letter-spacing: 1px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
   text-decoration: none;
-  transition: all 0.2s;
+  transition: all 0.22s;
   cursor: none;
+  position: relative;
+  overflow: hidden;
 }
+
+.btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.12) 50%, transparent 60%);
+  transform: translateX(-100%);
+  transition: transform 0.5s;
+}
+
+.btn:hover::after { transform: translateX(100%); }
+
 .btn-primary {
-  background: var(--green);
-  color: var(--bg);
-  border: 2px solid var(--green);
+  background: var(--red);
+  color: var(--white);
+  border: 2px solid var(--red);
+  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
 }
-.btn-primary:hover { background: transparent; color: var(--green); transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,255,136,0.3); }
+
+.btn-primary:hover {
+  background: transparent;
+  color: var(--red-hot);
+  box-shadow: 0 0 36px rgba(229, 9, 20, 0.4);
+}
+
 .btn-secondary {
   background: transparent;
-  color: var(--green);
-  border: 2px solid var(--green-border);
+  color: var(--white);
+  border: 2px solid var(--red-border);
 }
-.btn-secondary:hover { border-color: var(--green); transform: translateY(-2px); }
 
-/* HERO STATS */
+.btn-secondary:hover {
+  border-color: var(--red);
+  color: var(--red-hot);
+}
+
 .hero-stats {
   position: absolute;
-  right: 40px;
+  right: 36px;
   top: 50%;
   transform: translateY(-50%);
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 20px;
+  z-index: 3;
   opacity: 0;
-  animation: fadeUp 0.8s ease 1.2s forwards;
-}
-.stat-item {
-  text-align: right;
-  border-right: 2px solid var(--green-border);
-  padding-right: 20px;
-}
-.stat-item .val {
-  font-family: var(--display);
-  font-size: 2.2rem;
-  font-weight: 800;
-  color: var(--green);
-  line-height: 1;
-}
-.stat-item .lbl {
-  font-size: 0.65rem;
-  color: var(--muted);
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  margin-top: 4px;
+  animation: fadeUp 0.75s ease 0.85s forwards;
 }
 
-/* SECTIONS */
+.stat-item {
+  text-align: right;
+  border-right: 3px solid var(--red);
+  padding-right: 16px;
+}
+
+.stat-item .val {
+  font-family: var(--blade);
+  font-size: 1.85rem;
+  font-weight: 700;
+  color: var(--white);
+  letter-spacing: 0.06em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-item .val span.suffix { font-size: 0.55em; opacity: 0.85; vertical-align: super; margin-left: 2px; }
+
+.stat-item .lbl {
+  font-size: 0.58rem;
+  color: var(--muted);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin-top: 6px;
+  max-width: 140px;
+  margin-left: auto;
+  line-height: 1.35;
+}
+
+.metrics-strip {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--red-border);
+  border-top: 1px solid var(--red-border);
+  border-bottom: 1px solid var(--red-border);
+}
+
+.metric-cell {
+  background: var(--bg2);
+  padding: 28px 20px;
+  text-align: center;
+  transition: background 0.25s;
+}
+
+.metric-cell:hover { background: var(--bg3); }
+
+.metric-value {
+  font-family: var(--blade);
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 700;
+  color: var(--red-hot);
+  letter-spacing: 0.06em;
+  font-variant-numeric: tabular-nums;
+}
+
+.metric-label {
+  font-size: 0.62rem;
+  color: var(--muted);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-top: 8px;
+}
+
 section {
-  padding: 100px 40px;
-  max-width: 960px;
+  padding: 92px 40px;
+  max-width: 1020px;
   margin: 0 auto;
+  position: relative;
+  z-index: 2;
 }
 
 .section-label {
-  font-size: 0.7rem;
-  letter-spacing: 3px;
+  font-size: 0.62rem;
+  letter-spacing: 0.38em;
   text-transform: uppercase;
-  color: var(--green);
-  margin-bottom: 8px;
+  color: var(--red);
+  margin-bottom: 10px;
 }
-.section-label::before { content: '// '; }
+
+.section-label::before { content: '> '; color: var(--muted); }
 
 .section-title {
-  font-family: var(--display);
-  font-size: clamp(1.8rem, 4vw, 2.8rem);
-  font-weight: 800;
+  font-family: var(--blade);
+  font-size: clamp(1.65rem, 3.8vw, 2.65rem);
+  font-weight: 700;
   color: var(--white);
-  letter-spacing: -1px;
-  margin-bottom: 50px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 40px;
+  line-height: 1.06;
 }
 
-/* ABOUT */
 .about-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 40px;
+  gap: 36px;
   align-items: start;
 }
+
 .about-text p {
-  font-size: 0.9rem;
-  line-height: 1.9;
+  font-size: 0.86rem;
+  line-height: 1.82;
   color: var(--text);
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
-.about-text p strong { color: var(--green); font-weight: 700; }
+
+.about-text p strong { color: var(--white); font-weight: 700; }
 
 .terminal-block {
   background: var(--bg2);
-  border: 1px solid var(--green-border);
-  border-radius: 8px;
+  border: 1px solid var(--red-border);
   overflow: hidden;
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%);
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.5), 0 20px 50px rgba(0,0,0,0.35);
 }
+
 .terminal-bar {
-  background: rgba(0,255,136,0.06);
+  background: var(--red-faint);
   padding: 10px 16px;
   display: flex;
   align-items: center;
   gap: 8px;
-  border-bottom: 1px solid var(--green-border);
+  border-bottom: 1px solid var(--red-border);
 }
-.terminal-bar span {
-  font-size: 0.65rem;
-  color: var(--muted);
-  letter-spacing: 1px;
-}
-.dot { width: 10px; height: 10px; border-radius: 50%; }
-.dot-r { background: #ff5555; }
-.dot-y { background: #ffcc44; }
-.dot-g { background: #44ff88; }
-.terminal-body { padding: 20px; font-size: 0.78rem; line-height: 2; }
-.t-line { display: flex; gap: 8px; }
-.t-prompt { color: var(--green); flex-shrink: 0; }
-.t-cmd { color: var(--white); }
-.t-out { color: var(--muted); padding-left: 0; }
-.t-out.green { color: var(--green); }
-.t-out.yellow { color: var(--yellow); }
-.t-out.blue { color: var(--blue); }
 
-/* METHODOLOGY */
-.method-cards {
+.terminal-bar span {
+  font-size: 0.58rem;
+  color: var(--muted);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.dot { width: 8px; height: 8px; border-radius: 0; transform: rotate(45deg); }
+.dot-r { background: var(--red); }
+.dot-y { background: var(--white); opacity: 0.45; }
+.dot-g { background: var(--muted); }
+
+.terminal-body { padding: 18px; font-size: 0.74rem; line-height: 1.9; }
+
+.t-line { display: flex; gap: 8px; flex-wrap: wrap; }
+.t-prompt { color: var(--red); flex-shrink: 0; }
+.t-cmd { color: var(--white); }
+.t-out { color: var(--muted); }
+.t-out.red { color: var(--red-hot); }
+.t-out.white { color: var(--white); }
+
+.tracks-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 1fr 1fr;
   gap: 20px;
 }
-.method-card {
+
+.track-card {
   background: var(--bg2);
-  border: 1px solid var(--green-border);
-  border-radius: 8px;
+  border: 1px solid var(--red-border);
   padding: 28px 24px;
   position: relative;
   overflow: hidden;
-  transition: transform 0.2s, border-color 0.2s;
+  transition: border-color 0.25s, transform 0.25s;
 }
-.method-card::before {
+
+.track-card::before {
   content: '';
   position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 2px;
-  background: var(--green);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.3s ease;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--red), transparent);
+  opacity: 0.9;
 }
-.method-card:hover { transform: translateY(-4px); border-color: rgba(0,255,136,0.35); }
-.method-card:hover::before { transform: scaleX(1); }
-.card-icon { font-size: 1.8rem; margin-bottom: 16px; }
-.card-title { font-family: var(--display); font-size: 1rem; font-weight: 800; color: var(--white); margin-bottom: 10px; }
-.card-body { font-size: 0.78rem; line-height: 1.7; color: var(--muted); }
+
+.track-card:hover {
+  border-color: rgba(229, 9, 20, 0.65);
+  transform: translateY(-2px);
+}
+
+.track-card h3 {
+  font-family: var(--blade);
+  font-size: 1.15rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--white);
+  margin-bottom: 14px;
+}
+
+.track-card p, .track-card li {
+  font-size: 0.78rem;
+  line-height: 1.65;
+  color: var(--muted);
+}
+
+.track-card ul { margin-top: 10px; padding-left: 1.1em; }
+.track-card li { margin-bottom: 6px; color: var(--text); }
+
+.track-tag {
+  display: inline-block;
+  margin-top: 16px;
+  font-size: 0.58rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--red-hot);
+  border: 1px solid var(--red-border);
+  padding: 5px 10px;
+}
+
+.method-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.method-card {
+  background: var(--bg2);
+  border: 1px solid var(--red-border);
+  padding: 24px 20px;
+  position: relative;
+  transition: transform 0.22s, border-color 0.22s;
+  overflow: hidden;
+}
+
+.shimmer::after {
+  content: '';
+  position: absolute;
+  inset: -50%;
+  background: linear-gradient(
+    120deg,
+    transparent 45%,
+    rgba(255, 255, 255, 0.04) 50%,
+    transparent 55%
+  );
+  animation: shimmer 6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes shimmer {
+  0%, 100% { transform: translateX(-30%) rotate(12deg); }
+  50% { transform: translateX(30%) rotate(12deg); }
+}
+
+.method-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(229, 9, 20, 0.55);
+}
+
+.card-icon { font-size: 1.35rem; margin-bottom: 10px; opacity: 0.9; }
+
+.card-title {
+  font-family: var(--blade);
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: var(--white);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.card-body {
+  font-size: 0.74rem;
+  line-height: 1.62;
+  color: var(--muted);
+}
+
 .card-tag {
   display: inline-block;
-  margin-top: 14px;
-  background: var(--green-faint);
-  color: var(--green);
-  border: 1px solid var(--green-border);
-  border-radius: 3px;
-  padding: 3px 10px;
-  font-size: 0.68rem;
-  letter-spacing: 1px;
+  margin-top: 12px;
+  background: var(--red-faint);
+  color: var(--red-hot);
+  border: 1px solid var(--red-border);
+  padding: 4px 9px;
+  font-size: 0.58rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
 }
 
-/* STACK */
 .stack-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(158px, 1fr));
+  gap: 10px;
 }
+
 .stack-item {
-  background: var(--bg2);
-  border: 1px solid var(--green-border);
-  border-radius: 6px;
-  padding: 16px 18px;
+  background: var(--bg3);
+  border: 1px solid var(--red-border);
+  padding: 13px 14px;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   transition: all 0.2s;
 }
-.stack-item:hover { border-color: var(--green); background: var(--green-faint); transform: translateX(4px); }
-.stack-icon { font-size: 1.3rem; }
-.stack-name { font-size: 0.82rem; font-weight: 600; color: var(--text); }
-.stack-sub { font-size: 0.65rem; color: var(--muted); }
 
-/* LINKS */
+.stack-item:hover {
+  border-color: var(--red);
+  background: var(--red-faint);
+  transform: translateX(2px);
+  box-shadow: 0 0 20px rgba(229, 9, 20, 0.08);
+}
+
+.stack-icon { font-size: 1.1rem; }
+.stack-name { font-size: 0.76rem; font-weight: 600; color: var(--white); }
+.stack-sub { font-size: 0.58rem; color: var(--muted); letter-spacing: 0.05em; line-height: 1.3; }
+
 .links-row {
   display: flex;
-  gap: 20px;
+  gap: 14px;
   flex-wrap: wrap;
-  margin-top: 30px;
+  margin-top: 26px;
 }
+
 .link-card {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
   background: var(--bg2);
-  border: 1px solid var(--green-border);
-  border-radius: 8px;
-  padding: 20px 24px;
+  border: 1px solid var(--red-border);
+  padding: 16px 20px;
   text-decoration: none;
   flex: 1;
-  min-width: 200px;
-  transition: all 0.2s;
+  min-width: 180px;
+  transition: all 0.22s;
 }
-.link-card:hover { border-color: var(--green); transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,255,136,0.1); }
-.link-card-icon { font-size: 1.5rem; }
-.link-card-text .title { font-size: 0.85rem; font-weight: 700; color: var(--white); }
-.link-card-text .sub { font-size: 0.7rem; color: var(--muted); margin-top: 2px; }
-.link-card-arrow { margin-left: auto; color: var(--green); opacity: 0; transition: opacity 0.2s, transform 0.2s; }
+
+.link-card:hover {
+  border-color: var(--red);
+  box-shadow: 0 0 32px rgba(229, 9, 20, 0.12);
+}
+
+.link-card-icon {
+  font-family: var(--blade);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--red);
+  letter-spacing: 0.08em;
+}
+
+.link-card-text .title {
+  font-family: var(--blade);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--white);
+}
+
+.link-card-text .sub { font-size: 0.65rem; color: var(--muted); margin-top: 2px; }
+
+.link-card-arrow {
+  margin-left: auto;
+  color: var(--red);
+  opacity: 0;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
 .link-card:hover .link-card-arrow { opacity: 1; transform: translateX(4px); }
 
-/* PHILOSOPHY */
 .philosophy-box {
-  border: 1px solid var(--green-border);
-  border-radius: 8px;
-  padding: 40px;
-  background: var(--green-faint);
+  border: 1px solid var(--red-border);
+  padding: 32px;
+  background: linear-gradient(145deg, var(--red-faint) 0%, transparent 50%);
   position: relative;
-}
-.philosophy-box::before {
-  content: '"';
-  position: absolute;
-  top: -20px;
-  left: 30px;
-  font-family: var(--display);
-  font-size: 5rem;
-  color: var(--green);
-  line-height: 1;
-  opacity: 0.4;
-}
-.philosophy-text {
-  font-family: var(--display);
-  font-size: clamp(1rem, 2vw, 1.3rem);
-  font-weight: 700;
-  color: var(--white);
-  line-height: 1.6;
-  letter-spacing: -0.3px;
-}
-.philosophy-attr {
-  margin-top: 20px;
-  font-size: 0.75rem;
-  color: var(--muted);
-  letter-spacing: 1.5px;
+  margin-top: 32px;
+  box-shadow: inset 0 0 60px rgba(229, 9, 20, 0.04);
 }
 
-/* FOOTER */
+.philosophy-box::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(180deg, var(--red), var(--red-dim));
+}
+
+.philosophy-text {
+  font-family: var(--blade);
+  font-size: clamp(0.95rem, 1.9vw, 1.2rem);
+  font-weight: 600;
+  color: var(--white);
+  line-height: 1.48;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.philosophy-attr {
+  margin-top: 16px;
+  font-size: 0.62rem;
+  color: var(--muted);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
 footer {
-  border-top: 1px solid var(--green-border);
-  padding: 30px 40px;
+  border-top: 1px solid var(--red-border);
+  padding: 26px 40px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 0.72rem;
+  font-size: 0.64rem;
   color: var(--muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  position: relative;
+  z-index: 2;
 }
-footer .green { color: var(--green); }
 
-/* ANIMATIONS */
+footer .red { color: var(--red); }
+
 @keyframes fadeUp {
-  from { opacity:0; transform: translateY(24px); }
-  to { opacity:1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .reveal {
   opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.7s ease, transform 0.7s ease;
+  transform: translateY(22px);
+  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
 }
+
 .reveal.visible { opacity: 1; transform: translateY(0); }
 
-/* GLOWING LINE */
-.glow-line {
-  width: 60px;
-  height: 2px;
-  background: var(--green);
-  box-shadow: 0 0 12px var(--green);
-  margin-bottom: 50px;
+@media (max-width: 900px) {
+  .metrics-strip { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 768px) {
-  nav { padding: 16px 20px; }
+  nav { padding: 14px 20px; }
   .nav-links { display: none; }
-  #hero { padding: 100px 20px 60px; }
+  #hero { padding: 96px 20px 72px; }
+  .hero-inner { padding-left: 22px; border-left-width: 3px; }
   .hero-stats { display: none; }
-  section { padding: 70px 20px; }
-  .about-grid { grid-template-columns: 1fr; }
-  .method-cards { grid-template-columns: 1fr; }
-  .hero-name { letter-spacing: -2px; }
+  section { padding: 68px 20px; }
+  .about-grid, .tracks-grid, .method-cards { grid-template-columns: 1fr; }
   footer { flex-direction: column; gap: 10px; text-align: center; }
 }
 </style>
 </head>
 <body>
 
-<div id="cursor"></div>
-<div id="cursor-dot"></div>
+<div class="bg-pulse" aria-hidden="true"></div>
+<div id="cursor" aria-hidden="true"></div>
+<div id="cursor-dot" aria-hidden="true"></div>
 
-<!-- NAV -->
 <nav>
   <div class="nav-logo">
-    <!-- Sine wave + DM logo -->
-    <svg class="logo-svg" viewBox="0 0 80 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg class="logo-svg" viewBox="0 0 80 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
       <defs>
-        <filter id="lf"><feGaussianBlur stdDeviation="1.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-        <radialGradient id="lg" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stop-color="#00ff88" stop-opacity="0.2"/>
-          <stop offset="100%" stop-color="#00ff88" stop-opacity="0"/>
-        </radialGradient>
+        <filter id="lf"><feGaussianBlur stdDeviation="0.7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
       </defs>
-      <!-- Ambient glow -->
-      <ellipse cx="40" cy="20" rx="36" ry="18" fill="url(#lg)"/>
-      <!-- Sine wave behind -->
-      <path d="M 6 20 C 11 10, 17 10, 22 20 C 27 30, 33 30, 40 20 C 47 10, 53 10, 58 20 C 63 30, 69 30, 74 20"
-        stroke="#00ff88" stroke-width="1.4" fill="none" stroke-opacity="0.7" filter="url(#lf)"/>
-      <!-- DM bold in center -->
-      <text x="40" y="22" fill="#00ff88" font-family="'JetBrains Mono',monospace"
-        font-weight="800" font-size="13" text-anchor="middle" dominant-baseline="middle"
-        filter="url(#lf)" letter-spacing="-0.5">DM</text>
-      <!-- Small dot on wave peak left -->
-      <circle cx="22" cy="20" r="1.8" fill="#00ff88" opacity="0.9"/>
-      <!-- Small dot on wave peak right -->
-      <circle cx="58" cy="20" r="1.8" fill="#00ff88" opacity="0.9"/>
+      <path d="M8 32 L8 8 L22 8 L36 22 L50 8 L64 8 L64 32 L52 32 L52 18 L38 32 L24 18 L24 32 Z" fill="#e50914" filter="url(#lf)" opacity="0.95"/>
+      <text x="40" y="24" fill="#fafafa" font-family="'JetBrains Mono',monospace" font-weight="700" font-size="11" text-anchor="middle" letter-spacing="2">DM</text>
     </svg>
-    daniel<span style="color:var(--muted)">.</span>malka
+    Daniel<span style="color:var(--muted)">·</span>Malka
   </div>
   <ul class="nav-links">
-    <li><a href="#about">about</a></li>
-    <li><a href="#methodology">methodology</a></li>
-    <li><a href="#stack">stack</a></li>
-    <li><a href="#connect">connect</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#tracks">Tracks</a></li>
+    <li><a href="#methodology">Method</a></li>
+    <li><a href="#stack">Stack</a></li>
+    <li><a href="#connect">Connect</a></li>
   </ul>
 </nav>
 
-<!-- HERO -->
 <section id="hero">
+  <div class="hero-scan" aria-hidden="true"></div>
   <div class="hero-inner">
-    <div class="hero-prompt"><span>~/devops-roadmap</span> $ whoami</div>
-    <h1 class="hero-name">Daniel<br><span class="accent">Malka</span></h1>
-    <div class="hero-title">DevOps Engineer in Progress</div>
-    <div class="hero-typed"><span id="typed-text"></span><span class="cursor-blink"></span></div>
+    <div class="hero-prompt"><span>progression.txt</span> — tail -f excellence</div>
+    <h1 class="hero-name">Daniel<br><span class="accent accent-glow">Malka</span></h1>
+    <div class="hero-title">DevOps · AWS · Containers · Product</div>
+    <div class="hero-typed"><span id="typed-text"></span><span class="cursor-blink" aria-hidden="true"></span></div>
     <div class="hero-cta">
-      <a href="https://github.com/TheDanielMalka/DevOps-Roadmap-" class="btn btn-primary" target="_blank">⬡ GitHub Roadmap</a>
-      <a href="https://www.linkedin.com/in/daniel-malkaa/" class="btn btn-secondary" target="_blank">↗ LinkedIn</a>
+      <a href="https://github.com/TheDanielMalka/DevOps-Roadmap-" class="btn btn-primary" target="_blank" rel="noopener">DevOps Roadmap</a>
+      <a href="https://github.com/TheDanielMalka" class="btn btn-secondary" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://www.linkedin.com/in/daniel-malkaa/" class="btn btn-secondary" target="_blank" rel="noopener">LinkedIn</a>
     </div>
   </div>
 
-  <div class="hero-stats">
+  <div class="hero-stats" aria-hidden="true">
     <div class="stat-item">
-      <div class="val">4</div>
-      <div class="lbl">Sprints Done</div>
+      <div class="val">3<span class="suffix">+</span></div>
+      <div class="lbl">Major sprints closed · roadmap + Docker wave</div>
     </div>
     <div class="stat-item">
-      <div class="val">100%</div>
-      <div class="lbl">Task Tracking</div>
+      <div class="val">157<span class="suffix">+</span></div>
+      <div class="lbl">Engine tests passing · growing suite</div>
     </div>
     <div class="stat-item">
-      <div class="val">0→1</div>
-      <div class="lbl">Methodology</div>
+      <div class="val">100<span class="suffix">%</span></div>
+      <div class="lbl">Sprint 2 closure · full board</div>
     </div>
   </div>
 </section>
 
-<!-- ABOUT -->
+<div class="metrics-strip" id="metrics">
+  <div class="metric-cell">
+    <div class="metric-value" data-target="57">0</div>
+    <div class="metric-label">Arena issues orchestrated</div>
+  </div>
+  <div class="metric-cell">
+    <div class="metric-value" data-target="10">0</div>
+    <div class="metric-label">Milestones · parallel delivery</div>
+  </div>
+  <div class="metric-cell">
+    <div class="metric-value" data-target="90">0</div>
+    <div class="metric-label">Docker assessments · top band</div>
+  </div>
+  <div class="metric-cell">
+    <div class="metric-value" data-target="3">0</div>
+    <div class="metric-label">Stacks verified · test · lint · build</div>
+  </div>
+</div>
+
 <section id="about">
   <div class="reveal">
-    <div class="section-label">about</div>
-    <h2 class="section-title">Build While<br>You Learn.</h2>
+    <div class="section-label">About</div>
+    <h2 class="section-title">Documented Delivery.<br>Not Tutorial Tourism.</h2>
   </div>
   <div class="about-grid reveal">
     <div class="about-text">
       <p>
-        I don't follow tutorials and move on. I treat every concept as a <strong>production task</strong> — documented, verified, and committed to a live repo with full Git history.
+        I run a <strong>public DevOps roadmap</strong> like production R&amp;D: Jira sprints, GitHub milestones, smart commits, PRs that close issues, and Actions that lint and test real code — starting from a structured <strong>monorepo</strong> (Node, Express, middleware, JSON APIs) and professional dependency tooling.
       </p>
       <p>
-        This roadmap is managed like a real R&D project: <strong>Jira sprints</strong>, GitHub issues with labels, CI/CD pipelines, and proper branching. Because the only way to learn DevOps is to actually do DevOps.
+        On <strong>Linux</strong> I went deep on OS fundamentals, shell pipelines, FHS and permissions, log paths (<code style="color:var(--red-hot)">journalctl</code>, rotation), and built a <strong>Bash resource monitor</strong> with Slack webhooks, cron, logrotate, and idempotent <code style="color:var(--red-hot)">setup.sh</code> — the same class of automation you ship beside apps.
       </p>
       <p>
-        When my PC is down, I build from <strong>Termux on Android</strong>. No excuses. No blockers. Just engineering.
+        <strong>Docker</strong> is end-to-end: engine mental model, run/inspect/exec, images and layer cache, bridge networking and DNS between containers, named volumes vs bind mounts, Dockerfiles, Compose, registry login/tag/push — plus <strong>Compose + nginx + Postgres on EC2</strong> behind security groups.
+      </p>
+      <p>
+        <strong>AWS</strong> tracks IAM (MFA, least-privilege experiments), custom <strong>VPC</strong> with public/private subnets, IGW and routes, <strong>EC2</strong> bootstrap (SSH keys, Docker, Python venv, repo clone), <strong>S3</strong> policies and versioning, static hosting concepts, and <strong>CLI</strong> workflows including IAM roles on EC2 instead of long-lived keys where it matters.
+      </p>
+      <p>
+        When hardware failed, I kept momentum on <strong>Termux</strong>, then rebuilt Windows + WSL, restored GitHub/Jira sync, and validated the same workflow across machines — <strong>zero-downtime learning</strong> as a habit, not a slogan.
       </p>
     </div>
     <div class="terminal-block">
       <div class="terminal-bar">
         <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
-        <span>daniel@devops:~</span>
+        <span>daniel@roadmap — verify</span>
       </div>
       <div class="terminal-body">
-        <div class="t-line"><span class="t-prompt">$</span><span class="t-cmd">cat philosophy.txt</span></div>
-        <div class="t-line"><span class="t-out green">▸ Zero shortcuts</span></div>
-        <div class="t-line"><span class="t-out green">▸ Every task documented</span></div>
-        <div class="t-line"><span class="t-out green">▸ 100% operational readiness</span></div>
-        <div class="t-line" style="margin-top:8px;"><span class="t-prompt">$</span><span class="t-cmd">git log --oneline -3</span></div>
-        <div class="t-line"><span class="t-out yellow">f25ad8f</span><span class="t-out"> Dockerize Python app</span></div>
-        <div class="t-line"><span class="t-out yellow">019e8ea</span><span class="t-out"> Add persistent volumes</span></div>
-        <div class="t-line"><span class="t-out yellow">242507c</span><span class="t-out"> Container networking lab</span></div>
-        <div class="t-line" style="margin-top:8px;"><span class="t-prompt">$</span><span class="t-cmd">echo $STATUS</span></div>
-        <div class="t-line"><span class="t-out blue">Sprint 3: Containerization ✓</span></div>
+        <div class="t-line"><span class="t-prompt">$</span><span class="t-cmd">grep -E "Sprint|pytest|compose" progression.txt | head</span></div>
+        <div class="t-line"><span class="t-out red">Sprint 2 — 28/28 issues · 26 SP · 100%</span></div>
+        <div class="t-line"><span class="t-out red">Sprint 3 — Docker deep dive · assessments 80–100%</span></div>
+        <div class="t-line"><span class="t-out red">pytest — 157 passed (engine + identity + wallet mocks)</span></div>
+        <div class="t-line"><span class="t-out white">docker compose up -d · nginx + postgres on EC2</span></div>
+        <div class="t-line" style="margin-top:10px;"><span class="t-prompt">$</span><span class="t-cmd">ssh -T git@github.com</span></div>
+        <div class="t-line"><span class="t-out white">Hi TheDanielMalka! ED25519 auth OK</span></div>
+        <div class="t-line" style="margin-top:10px;"><span class="t-prompt">$</span><span class="t-cmd">echo $STANDARD</span></div>
+        <div class="t-line"><span class="t-out red">Assessments logged · commits traced · no “almost.”</span></div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- METHODOLOGY -->
+<section id="tracks">
+  <div class="reveal">
+    <div class="section-label">Dual track</div>
+    <h2 class="section-title">Roadmap Lab<br>· Project Arena.</h2>
+  </div>
+  <div class="tracks-grid reveal">
+    <div class="track-card">
+      <h3>DevOps Roadmap</h3>
+      <p>Structured curriculum aligned with serious industry tracks — expressed as labeled issues, epics, and sprint reviews with scores recorded (e.g. OS fundamentals ~82%, Docker kahoots 90%+).</p>
+      <ul>
+        <li>Git Flow vs trunk-based; branch protection; review culture</li>
+        <li>GitHub CLI + jq automation (sync-tasks, daily extracts)</li>
+        <li>SSH ED25519, <code>~/.ssh/config</code>, HTTPS → SSH remotes</li>
+        <li>CI YAML refactored when the repo structure grew (/test, /scripts)</li>
+      </ul>
+      <span class="track-tag">Infra · CI · Cloud primitives</span>
+    </div>
+    <div class="track-card">
+      <h3>Project Arena</h3>
+      <p>A parallel product-grade thread: <strong>57 GitHub issues</strong> across <strong>10 milestones</strong>, dedicated Jira space, Smart Commits, and CI that evolved with the stack (Python matrix, tesseract in Actions, smart test detection).</p>
+      <ul>
+        <li><strong>Vision engine:</strong> capture (mss/OpenCV), OCR (Tesseract), color-based match detection, orchestrator + <strong>state machine</strong> (WAITING → REPORTED), full pytest + synthetic pipeline tests</li>
+        <li><strong>Desktop client:</strong> PyInstaller build, tray UX, game process detection, jittered capture intervals, anti-cheat-aware screen-only design</li>
+        <li><strong>Frontend:</strong> React, TypeScript, Vite, Tailwind, shadcn/ui, Zustand, Vitest UI tests, admin guards, legal pages</li>
+        <li><strong>Backend engine:</strong> SQLite identity (smurf checks, disputes, daily match limits), backup rotation, wallet module with mocked exchange tests</li>
+        <li><strong>Repo hygiene:</strong> <code>verify:all</code> (frontend + engine + client), Dockerfile npm-only alignment</li>
+      </ul>
+      <span class="track-tag">CV · TS · Python · shipping</span>
+    </div>
+  </div>
+</section>
+
 <section id="methodology">
   <div class="reveal">
-    <div class="section-label">methodology</div>
-    <h2 class="section-title">Engineering<br>Standards.</h2>
+    <div class="section-label">Method</div>
+    <h2 class="section-title">How Quality<br>Stays Non-Negotiable.</h2>
   </div>
   <div class="method-cards reveal">
-    <div class="method-card">
-      <div class="card-icon">🗂️</div>
-      <div class="card-title">Agile Project Management</div>
-      <div class="card-body">Full Jira integration with Scrum sprints, epics, and story points. Every task tracked to completion — no floating TODOs.</div>
-      <div class="card-tag">JIRA · SCRUM</div>
+    <div class="method-card shimmer">
+      <div class="card-icon">▣</div>
+      <div class="card-title">Agile + Jira</div>
+      <div class="card-body">Sprints, backlog hygiene, milestone planning — mirrored on GitHub. Arena added its own space (PA) with ten sprint containers for parallel execution.</div>
+      <div class="card-tag">Scrum · traceability</div>
     </div>
-    <div class="method-card">
+    <div class="method-card shimmer">
       <div class="card-icon">⎇</div>
-      <div class="card-title">Git Methodology</div>
-      <div class="card-body">Trunk-based workflow with labeled GitHub Issues, linked commits, and pull requests. Full traceability from idea to merge.</div>
-      <div class="card-tag">GIT · GITHUB ACTIONS</div>
+      <div class="card-title">Git as System of Record</div>
+      <div class="card-body">Smart commits transition Jira; PRs close issues; labels encode type (Security, Infra, CI/CD). Pagination and gh scripts keep boards honest at scale.</div>
+      <div class="card-tag">GitHub · automation</div>
     </div>
-    <div class="method-card">
-      <div class="card-icon">☁️</div>
-      <div class="card-title">Cloud Infrastructure</div>
-      <div class="card-body">Custom VPC with public and private subnets, EC2 instances, IAM users and policies, Security Groups. Building real infrastructure from day one.</div>
-      <div class="card-tag">AWS · EC2 · VPC · IAM</div>
+    <div class="method-card shimmer">
+      <div class="card-icon">☁</div>
+      <div class="card-title">AWS First Principles</div>
+      <div class="card-body">Network, identity, and storage taught as connected systems — not console clicks in isolation. EC2 doubles as a Docker host for multi-service compose.</div>
+      <div class="card-tag">VPC · IAM · S3 · EC2</div>
     </div>
-    <div class="method-card">
-      <div class="card-icon">⚙️</div>
-      <div class="card-title">CI/CD from Day One</div>
-      <div class="card-body">Automated lint and test pipelines via GitHub Actions. Professional standards enforced on every push — not added later.</div>
-      <div class="card-tag">CI/CD · LINT · TEST</div>
+    <div class="method-card shimmer">
+      <div class="card-icon">◈</div>
+      <div class="card-title">Verification Chains</div>
+      <div class="card-body">npm test · lint · build; pytest suites; packaged client builds; PowerShell verification scripts — one command surface to prove the tree is green.</div>
+      <div class="card-tag">CI · local parity</div>
     </div>
   </div>
 
-  <div class="philosophy-box reveal" style="margin-top: 40px;">
+  <div class="philosophy-box reveal">
     <p class="philosophy-text">
-      "I manage this roadmap like a production-grade R&D project. Just like configuring an SSH key — there is no room for <em>almost</em>. Every task is documented and verified to ensure 100% operational readiness."
+      Same bar as a clean SSH handshake or a green pytest run: if it is not verified and traceable, it is not done. Assessments, logs, and PR history are part of the deliverable — not an afterthought.
     </p>
-    <div class="philosophy-attr">— DANIEL MALKA · DEVOPS ROADMAP README</div>
+    <div class="philosophy-attr">— distilled from progression.txt · operating standard</div>
   </div>
 </section>
 
-<!-- STACK -->
 <section id="stack">
   <div class="reveal">
-    <div class="section-label">tech stack</div>
-    <h2 class="section-title">Current<br>Ecosystem.</h2>
+    <div class="section-label">Stack</div>
+    <h2 class="section-title">Current Edge.</h2>
   </div>
   <div class="stack-grid reveal">
-    <div class="stack-item">
-      <div class="stack-icon">🐳</div>
-      <div><div class="stack-name">Docker</div><div class="stack-sub">Containerization</div></div>
-    </div>
-    <div class="stack-item">
-      <div class="stack-icon">☁️</div>
-      <div><div class="stack-name">AWS</div><div class="stack-sub">Cloud Infrastructure</div></div>
-    </div>
-    <div class="stack-item">
-      <div class="stack-icon">🐙</div>
-      <div><div class="stack-name">GitHub Actions</div><div class="stack-sub">CI/CD Pipeline</div></div>
-    </div>
-    <div class="stack-item">
-      <div class="stack-icon">📋</div>
-      <div><div class="stack-name">Jira</div><div class="stack-sub">Scrum Management</div></div>
-    </div>
-    <div class="stack-item">
-      <div class="stack-icon">⎇</div>
-      <div><div class="stack-name">Git</div><div class="stack-sub">Trunk-based Workflow</div></div>
-    </div>
-    <div class="stack-item">
-      <div class="stack-icon">🐍</div>
-      <div><div class="stack-name">Python</div><div class="stack-sub">Scripting & Apps</div></div>
-    </div>
-    <div class="stack-item">
-      <div class="stack-icon">📦</div>
-      <div><div class="stack-name">NPM</div><div class="stack-sub">Environment & Config</div></div>
-    </div>
-    <div class="stack-item">
-      <div class="stack-icon">🐧</div>
-      <div><div class="stack-name">Linux / Ubuntu</div><div class="stack-sub">Primary OS</div></div>
-    </div>
-    <div class="stack-item">
-      <div class="stack-icon">📱</div>
-      <div><div class="stack-name">Termux</div><div class="stack-sub">Mobile DevOps</div></div>
-    </div>
+    <div class="stack-item"><div class="stack-icon">☁</div><div><div class="stack-name">AWS</div><div class="stack-sub">VPC · EC2 · IAM · S3 · CLI · budgets</div></div></div>
+    <div class="stack-item"><div class="stack-icon">🐳</div><div><div class="stack-name">Docker</div><div class="stack-sub">Images · networks · volumes · Compose · Hub</div></div></div>
+    <div class="stack-item"><div class="stack-icon">⚙</div><div><div class="stack-name">GitHub Actions</div><div class="stack-sub">Matrix builds · smart test paths</div></div></div>
+    <div class="stack-item"><div class="stack-icon">📋</div><div><div class="stack-name">Jira</div><div class="stack-sub">Roadmap + Arena (PA)</div></div></div>
+    <div class="stack-item"><div class="stack-icon">⎇</div><div><div class="stack-name">Git / gh</div><div class="stack-sub">PRs · labels · CLI scraping</div></div></div>
+    <div class="stack-item"><div class="stack-icon">🐍</div><div><div class="stack-name">Python</div><div class="stack-sub">Engine · client · pytest suites</div></div></div>
+    <div class="stack-item"><div class="stack-icon">⚛</div><div><div class="stack-name">React + TS</div><div class="stack-sub">Vite · Tailwind · shadcn · Vitest</div></div></div>
+    <div class="stack-item"><div class="stack-icon">👁</div><div><div class="stack-name">OpenCV · OCR</div><div class="stack-sub">mss · Tesseract · vision engine</div></div></div>
+    <div class="stack-item"><div class="stack-icon">🗄</div><div><div class="stack-name">SQLite</div><div class="stack-sub">Identity · disputes · backups</div></div></div>
+    <div class="stack-item"><div class="stack-icon">🐧</div><div><div class="stack-name">Linux / WSL</div><div class="stack-sub">Bash · logs · monitoring tools</div></div></div>
+    <div class="stack-item"><div class="stack-icon">📱</div><div><div class="stack-name">Termux</div><div class="stack-sub">Continuity when hardware fails</div></div></div>
+    <div class="stack-item"><div class="stack-icon">◆</div><div><div class="stack-name">Node / NPM</div><div class="stack-sub">Express · ESLint flat · monorepo</div></div></div>
   </div>
 </section>
 
-<!-- CONNECT -->
 <section id="connect">
   <div class="reveal">
-    <div class="section-label">connect</div>
-    <h2 class="section-title">Let's Talk<br>Infrastructure.</h2>
+    <div class="section-label">Connect</div>
+    <h2 class="section-title">Boards · Repos<br>· Profile.</h2>
   </div>
   <div class="links-row reveal">
-    <a href="https://github.com/TheDanielMalka/DevOps-Roadmap-" class="link-card" target="_blank">
-      <div class="link-card-icon">⬡</div>
+    <a href="https://github.com/TheDanielMalka/DevOps-Roadmap-" class="link-card" target="_blank" rel="noopener">
+      <div class="link-card-icon">RD</div>
       <div class="link-card-text">
         <div class="title">DevOps Roadmap</div>
-        <div class="sub">github.com/TheDanielMalka</div>
+        <div class="sub">Public sprint history</div>
       </div>
       <div class="link-card-arrow">→</div>
     </a>
-    <a href="https://www.linkedin.com/in/daniel-malkaa/" class="link-card" target="_blank">
-      <div class="link-card-icon">💼</div>
+    <a href="https://github.com/TheDanielMalka" class="link-card" target="_blank" rel="noopener">
+      <div class="link-card-icon">GH</div>
+      <div class="link-card-text">
+        <div class="title">GitHub</div>
+        <div class="sub">All repositories</div>
+      </div>
+      <div class="link-card-arrow">→</div>
+    </a>
+    <a href="https://www.linkedin.com/in/daniel-malkaa/" class="link-card" target="_blank" rel="noopener">
+      <div class="link-card-icon">in</div>
       <div class="link-card-text">
         <div class="title">LinkedIn</div>
         <div class="sub">daniel-malkaa</div>
       </div>
       <div class="link-card-arrow">→</div>
     </a>
-    <a href="https://the-daniel-malka.atlassian.net/jira" class="link-card" target="_blank">
-      <div class="link-card-icon">📋</div>
+    <a href="https://the-daniel-malka.atlassian.net/jira" class="link-card" target="_blank" rel="noopener">
+      <div class="link-card-icon">JR</div>
       <div class="link-card-text">
-        <div class="title">Jira Board</div>
-        <div class="sub">Live Sprint Tracking</div>
+        <div class="title">Jira</div>
+        <div class="sub">Live boards</div>
       </div>
       <div class="link-card-arrow">→</div>
     </a>
@@ -750,61 +1059,117 @@ footer .green { color: var(--green); }
 </section>
 
 <footer>
-  <div>daniel<span class="green">.</span>malka — DevOps Roadmap <span class="green">2026</span></div>
-  <div>built with <span class="green">❤</span> and <span class="green">docker run</span></div>
+  <div>Daniel Malka <span class="red">·</span> 2026 <span class="red">·</span> progression-backed portfolio</div>
+  <div>Ship <span class="red">/</span> measure <span class="red">/</span> commit</div>
 </footer>
 
 <script>
-// CURSOR
-const cursor = document.getElementById('cursor');
-const dot = document.getElementById('cursor-dot');
-let mx=0,my=0,cx=0,cy=0;
-document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; dot.style.left=mx+'px'; dot.style.top=my+'px'; });
-function animCursor(){
-  cx += (mx-cx)*0.15; cy += (my-cy)*0.15;
-  cursor.style.left=cx+'px'; cursor.style.top=cy+'px';
-  requestAnimationFrame(animCursor);
-}
-animCursor();
-document.querySelectorAll('a, button, .method-card, .stack-item').forEach(el => {
-  el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
-  el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
-});
+(function () {
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const cursor = document.getElementById('cursor');
+  const dot = document.getElementById('cursor-dot');
 
-// TYPING
-const phrases = [
-  'Building infrastructure from scratch.',
-  'Learning by shipping to production.',
-  'No almost. 100% operational readiness.',
-  'DevOps from Termux to the cloud.',
-];
-let pi=0, ci=0, deleting=false;
-const el = document.getElementById('typed-text');
-function type(){
-  const phrase = phrases[pi];
-  if(!deleting){
-    el.textContent = phrase.slice(0,ci+1);
-    ci++;
-    if(ci===phrase.length){ setTimeout(()=>{deleting=true;}, 2200); setTimeout(type,60); return; }
-  } else {
-    el.textContent = phrase.slice(0,ci-1);
-    ci--;
-    if(ci===0){ deleting=false; pi=(pi+1)%phrases.length; }
-  }
-  setTimeout(type, deleting?35:65);
-}
-setTimeout(type, 1800);
-
-// REVEAL ON SCROLL
-const reveals = document.querySelectorAll('.reveal');
-const obs = new IntersectionObserver((entries) => {
-  entries.forEach((e,i) => {
-    if(e.isIntersecting){
-      setTimeout(()=>e.target.classList.add('visible'), i*100);
+  if (!reduceMotion && cursor && dot) {
+    let mx = 0, my = 0, cx = 0, cy = 0;
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX;
+      my = e.clientY;
+      dot.style.left = mx + 'px';
+      dot.style.top = my + 'px';
+    });
+    function animCursor() {
+      cx += (mx - cx) * 0.17;
+      cy += (my - cy) * 0.17;
+      cursor.style.left = cx + 'px';
+      cursor.style.top = cy + 'px';
+      requestAnimationFrame(animCursor);
     }
-  });
-}, { threshold: 0.1 });
-reveals.forEach(r => obs.observe(r));
+    animCursor();
+    document.querySelectorAll('a, button, .method-card, .stack-item, .link-card, .track-card, .metric-cell').forEach(el => {
+      el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+      el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+    });
+  }
+
+  const phrases = [
+    'Docker: images, networks, volumes, Compose — assessed, not imagined.',
+    'AWS: IAM, VPC, EC2, S3 — CLI and console in sync.',
+    'Arena: vision engine + state machine + 157+ tests and climbing.',
+    'GitHub ↔ Jira smart commits — boards stay honest.',
+    'verify:all — frontend, engine, client builds in one chain.',
+  ];
+  let pi = 0, ci = 0, deleting = false;
+  const el = document.getElementById('typed-text');
+
+  function type() {
+    if (!el) return;
+    const phrase = phrases[pi];
+    if (!deleting) {
+      el.textContent = phrase.slice(0, ci + 1);
+      ci++;
+      if (ci === phrase.length) {
+        setTimeout(() => { deleting = true; }, 2100);
+        setTimeout(type, 50);
+        return;
+      }
+    } else {
+      el.textContent = phrase.slice(0, ci - 1);
+      ci--;
+      if (ci === 0) {
+        deleting = false;
+        pi = (pi + 1) % phrases.length;
+      }
+    }
+    setTimeout(type, deleting ? 28 : 54);
+  }
+  if (!reduceMotion) setTimeout(type, 1000);
+  else if (el) el.textContent = phrases[0];
+
+  function countUp(elm, target, duration) {
+    const start = performance.now();
+    const step = now => {
+      const t = Math.min(1, (now - start) / duration);
+      const eased = 1 - Math.pow(1 - t, 3);
+      elm.textContent = Math.round(eased * target);
+      if (t < 1) requestAnimationFrame(step);
+      else elm.textContent = target;
+    };
+    requestAnimationFrame(step);
+  }
+
+  const metrics = document.getElementById('metrics');
+  if (metrics && !reduceMotion) {
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        metrics.querySelectorAll('.metric-value[data-target]').forEach(cell => {
+          const tgt = parseInt(cell.getAttribute('data-target'), 10);
+          countUp(cell, tgt, 1400);
+        });
+        obs.disconnect();
+      });
+    }, { threshold: 0.35 });
+    obs.observe(metrics);
+  } else if (metrics) {
+    metrics.querySelectorAll('.metric-value[data-target]').forEach(cell => {
+      cell.textContent = cell.getAttribute('data-target');
+    });
+  }
+
+  const reveals = document.querySelectorAll('.reveal');
+  if (!reduceMotion) {
+    const robs = new IntersectionObserver(entries => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          setTimeout(() => e.target.classList.add('visible'), i * 70);
+        }
+      });
+    }, { threshold: 0.08 });
+    reveals.forEach(r => robs.observe(r));
+  } else {
+    reveals.forEach(r => r.classList.add('visible'));
+  }
+})();
 </script>
 </body>
 </html>
