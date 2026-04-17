@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Daniel Malka">
+  <rect width="32" height="32" rx="4" fill="#020203"/>
+  <polygon fill="#ff003c" points="4,28 4,4 10,4 16,18 22,4 28,4 28,28 22,28 22,12 16,22 10,12 10,28"/>
+  <text x="16" y="18.5" text-anchor="middle" font-family="system-ui,Segoe UI,sans-serif" font-size="7.5" font-weight="800" fill="#00f3ff" letter-spacing="-0.4">DM</text>
+</svg>
